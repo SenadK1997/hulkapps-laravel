@@ -13,10 +13,6 @@ class Movie extends Model
 
     protected $fillable = ['title', 'release_year', 'genre'];
 
-    // protected static function booted()
-    // {
-    //     static::addGlobalScope(new MovieFilterScope);
-    // }
     public function scopeOfType(Builder $query, string $type): void
     {
         $query->where('title', 'like', '%' . $type . '%')
@@ -40,6 +36,10 @@ class Movie extends Model
 
             $movie->slug = $slug;
         });
+    }
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'user_movie_followers', 'movie_id', 'user_id');
     }
 
 }

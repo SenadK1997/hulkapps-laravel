@@ -52,4 +52,12 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+    public function followedMovies()
+    {
+        return $this->belongsToMany(Movie::class, 'user_movie_followers', 'user_id', 'movie_id');
+    }
+    public function toggleFollowMovie($movieId)
+    {
+        return $this->followedMovies()->toggle($movieId);
+    }
 }

@@ -32,4 +32,6 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function($router){
     Route::post('/cache-favorite/{movieId}', [MovieController::class, 'cacheFavorite']);
     Route::get('/movies/search', [MovieController::class, 'searchMovie']);
     Route::get('/movies/all', [MovieController::class, 'getAllMovies']);
+
+    Route::post('/movies/toggle-follow/{movieId}', [MovieController::class, 'toggleFollowMovie']);
 });

@@ -77,4 +77,13 @@ class MovieController extends Controller
         $movies = Movie::all();
         return response()->json(['movies' => $movies]);
     }
+    public function toggleFollowMovie($movieId)
+    {
+        $user = auth()->user();
+        // dd($user);
+        $isFollowed = $user->toggleFollowMovie($movieId);
+        $message = $isFollowed['attached'] ? 'Movie followed' : 'Movie unfollowed';
+
+        return response()->json(['message' => $message]);
+    }
 }
