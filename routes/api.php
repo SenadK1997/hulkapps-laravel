@@ -30,4 +30,6 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function($router){
     Route::delete('/movies/{id}', [MovieController::class, 'deleteMovie']);
 
     Route::post('/cache-favorite/{movieId}', [MovieController::class, 'cacheFavorite']);
+    Route::get('/movies/search', [MovieController::class, 'searchMovie']);
+    Route::get('/movies/all', [MovieController::class, 'getAllMovies']);
 });

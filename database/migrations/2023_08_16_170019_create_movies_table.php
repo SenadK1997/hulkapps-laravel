@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->integer('release_year');
             $table->string('genre');
+            $table->string('slug');
             $table->timestamps();
         });
     }

@@ -15,9 +15,9 @@ class MovieController extends Controller
             'release_year' => 'required|integer',
             'genre' => 'required|string',
         ]);
-
+    
         $movie = Movie::create($validatedData);
-
+    
         return response()->json($movie, 201);
     }
 
@@ -58,5 +58,23 @@ class MovieController extends Controller
             'message' => 'Movie cached as favorite',
             'favorite_movie' => $movie
         ], 200);
+    }
+
+    public function searchMovie(Request $request)
+    {
+        $search = $request->input('search');
+
+        $movies = Movie::ofType($search)->get();
+
+        if ($movies->isEmpty()) {
+            return response()->json('Movie not found', 404);
+        }
+        
+        return response()->json($movies, 200);
+    }
+    public function getAllMovies()
+    {
+        $movies = Movie::all();
+        return response()->json(['movies' => $movies]);
     }
 }
