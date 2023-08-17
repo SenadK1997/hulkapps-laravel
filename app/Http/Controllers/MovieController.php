@@ -33,13 +33,10 @@ class MovieController extends Controller
 
     public function updateMovie(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'title' => 'required|string|max:255',
-            'release_year' => 'required|integer',
-            'genre' => 'required|string',
-        ]);
+        $validatedData = $this->validate($request, $this->validationRules());
         $movie = Movie::findOrFail($id);
         $movie->update($validatedData);
+        $movie->updateSlug();
         return response()->json($movie, 200);
     }
 

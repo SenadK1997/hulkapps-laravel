@@ -37,6 +37,20 @@ class Movie extends Model
             $movie->slug = $slug;
         });
     }
+    public function updateSlug()
+    {
+        $baseSlug = Str::slug($this->title);
+        $slug = $baseSlug;
+        $suffix = 1;
+
+        while (Movie::where('slug', $slug)->where('id', '<>', $this->id)->exists()) {
+            $slug = $baseSlug . '-' . $suffix;
+            $suffix++;
+        }
+
+        $this->slug = $slug;
+        $this->save();
+    }
     public function followers()
     {
         return $this->belongsToMany(User::class, 'user_movie_followers', 'movie_id', 'user_id');
