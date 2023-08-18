@@ -13,9 +13,12 @@ class MovieController extends Controller
 
     public function __construct(User $user)
     {
-        $this->$user = $user;
+        $this->$user = auth()->user();
     }
-
+    private function userIsAuthenticated()
+    {
+        return auth()->check();
+    }
     protected function validationRules()
     {
         return [
@@ -26,6 +29,10 @@ class MovieController extends Controller
     }
     public function createMovie(Request $request)
     {
+        if (!$this->userIsAuthenticated()) {
+            return $this->respondWithError('Unauthorized', 401);
+        }
+    
         $validatedData = $request->validate($this->validationRules());
         $movie = Movie::create($validatedData);
         return response()->json($movie, 201);
@@ -33,6 +40,9 @@ class MovieController extends Controller
 
     public function updateMovie(Request $request, $id)
     {
+        if (!$this->userIsAuthenticated()) {
+            return $this->respondWithError('Unauthorized', 401);
+        }
         $validatedData = $this->validate($request, $this->validationRules());
         $movie = Movie::findOrFail($id);
         $movie->update($validatedData);
@@ -42,6 +52,9 @@ class MovieController extends Controller
 
     public function deleteMovie($id)
     {
+        if (!$this->userIsAuthenticated()) {
+            return $this->respondWithError('Unauthorized', 401);
+        }
         $movie = Movie::findOrFail($id);
         $movie->delete();
         return response()->json(['message' => 'Movie deleted successfully'], 200);
@@ -49,6 +62,9 @@ class MovieController extends Controller
     public function cacheFavorite($movieId)
     {
         $user = auth()->user();
+        if (!$this->userIsAuthenticated()) {
+            return $this->respondWithError('Unauthorized', 401);
+        }
         $movie = Movie::findOrFail($movieId);
         $cacheKey = 'user_' . $user->id . '_favorite_' . $movie->id;
         Cache::forever($cacheKey, $movie);
@@ -78,8 +94,15 @@ class MovieController extends Controller
     public function toggleFollowMovie($movieId)
     {
         $user = auth()->user();
+        if (!$this->userIsAuthenticated()) {
+            return $this->respondWithError('Unauthorized', 401);
+        }
         $isFollowed = $user->toggleFollowMovie($movieId);
         $message = $isFollowed['attached'] ? 'Movie followed' : 'Movie unfollowed';
         return response()->json(['message' => $message]);
+    }
+    private function respondWithError($message, $statusCode)
+    {
+        return response()->json(['error' => $message], $statusCode);
     }
 }
