@@ -60,7 +60,7 @@ class MovieController extends Controller
 
     public function searchMovie(Request $request)
     {
-        $perPage = $request->input('per_page', 10); // Number of items per page
+        $perPage = $request->input('per_page', 10);
         $search = $request->input('search');
         $movies = Movie::ofType($search)->paginate($perPage);
         if ($movies->isEmpty()) {
